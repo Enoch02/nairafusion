@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">Nairafusion for Nairaland</string>
+    <string name="featured_topics">Featured Topics</string>
+    <string name="refresh_desc">Refresh</string>
+    <string name="previous_desc">Previous</string>
+    <string name="next_desc">Next</string>
+    <string name="home_desc">Go to home page</string>
+</resources>
