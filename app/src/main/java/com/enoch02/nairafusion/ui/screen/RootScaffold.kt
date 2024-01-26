@@ -13,12 +13,13 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.navigation.NavController
 import com.enoch02.nairafusion.R
 import com.enoch02.nairafusion.ui.screen.forum.ForumScreen
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun RootScaffold() {
+fun RootScaffold(navController: NavController) {
     val scope = rememberCoroutineScope()
     var topBarTitle by rememberSaveable { mutableStateOf(R.string.app_name) }
 
@@ -28,6 +29,7 @@ fun RootScaffold() {
         },
         content = { paddingValues ->
             ForumScreen(
+                navController = navController,
                 scope = scope,
                 modifier = Modifier.padding(paddingValues),
                 setTopBarTitle = {

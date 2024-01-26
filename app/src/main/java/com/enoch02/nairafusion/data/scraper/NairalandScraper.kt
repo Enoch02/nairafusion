@@ -6,11 +6,14 @@ import org.jsoup.Jsoup
 
 class NairalandScraper {
     private val baseUrl = "https://www.nairaland.com"
+    private val connection = Jsoup
+        .connect(baseUrl)
+        .userAgent("Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/118.0")
 
     suspend fun getFeaturedTopics(): Result<List<Topic>> {
         return withContext(Dispatchers.IO) {
             try {
-                val featuredDoc = Jsoup.connect(baseUrl).get()
+                val featuredDoc = connection.get()
                 val tables = featuredDoc.select("table")
                 val tableRows = tables[2].select("tr")
                 val topicElements = tableRows[1].select("a")
@@ -32,7 +35,7 @@ class NairalandScraper {
         return withContext(Dispatchers.IO) {
             try {
                 val newsUrl = "$baseUrl/news/$pageNumber"
-                val newsDoc = Jsoup.connect(newsUrl).get()
+                val newsDoc = connection.url(newsUrl).get()
 
                 /**
                  * Table 0 - header
@@ -67,5 +70,7 @@ class NairalandScraper {
     data class Topic(
         val title: String,
         val url: String,
-    )
+    ) {
+        fun getTopicId() = this.url.split("/")[3]
+    }
 }

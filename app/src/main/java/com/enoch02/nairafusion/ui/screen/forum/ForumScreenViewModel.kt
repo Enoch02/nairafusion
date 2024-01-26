@@ -15,10 +15,9 @@ class ForumScreenViewModel : ViewModel() {
 
     //TODO: create a list that holds previous topics list so that it navigating to previous page is faster
 
-    fun getFeaturedTopics() = viewModelScope.launch {
+    private fun getFeaturedTopics() = viewModelScope.launch {
         scraper.getFeaturedTopics()
             .onSuccess {
-                topics.clear()
                 currentForumScreenState.value = ForumScreenState.LOADING_COMPLETE
                 topics.addAll(it)
             }
@@ -28,10 +27,9 @@ class ForumScreenViewModel : ViewModel() {
             }
     }
 
-    fun getTopics(page: Int) = viewModelScope.launch {
+    private fun getTopics(page: Int) = viewModelScope.launch {
         scraper.getTopics(page)
             .onSuccess {
-                topics.clear()
                 currentForumScreenState.value = ForumScreenState.LOADING_COMPLETE
                 topics.addAll(it)
             }
@@ -43,11 +41,14 @@ class ForumScreenViewModel : ViewModel() {
 
     fun nextPage() {
         currentForumScreenState.value = ForumScreenState.LOADING
+        topics.clear()
         currentPage.value++
     }
 
     fun previousPage() {
         currentForumScreenState.value = ForumScreenState.LOADING
+        topics.clear()
+
         if (currentPage.value > 0) {
             currentPage.value--
         }

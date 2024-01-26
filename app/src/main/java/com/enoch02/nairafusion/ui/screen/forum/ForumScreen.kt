@@ -1,17 +1,22 @@
 package com.enoch02.nairafusion.ui.screen.forum
 
 import androidx.compose.animation.Crossfade
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowForward
+import androidx.compose.material.icons.filled.BookmarkBorder
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Refresh
+import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
@@ -24,8 +29,11 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 import com.enoch02.nairafusion.R
+import com.enoch02.nairafusion.navigation.Screen
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
@@ -36,6 +44,7 @@ import kotlinx.coroutines.launch
  * */
 @Composable
 fun ForumScreen(
+    navController: NavController,
     setTopBarTitle: (Int) -> Unit,
     scope: CoroutineScope,
     modifier: Modifier,
@@ -53,7 +62,9 @@ fun ForumScreen(
                 setTopBarTitle(R.string.featured_topics)
             }
 
-            viewModel.refreshPage()
+            if (viewModel.topics.isEmpty()) {
+                viewModel.refreshPage()
+            }
         }
     )
 
@@ -77,8 +88,29 @@ fun ForumScreen(
 
                                             ListItem(
                                                 headlineContent = { Text(text = topic.title) },
-                                                supportingContent = {
+                                                /*supportingContent = {
                                                     Text(text = topic.url)
+                                                },*/
+                                                trailingContent = {
+                                                    IconButton(
+                                                        onClick = { /*TODO*/ },
+                                                        content = {
+                                                            Icon(
+                                                                //TODO: replace with filled icon if post is in db
+                                                                imageVector = Icons.Default.BookmarkBorder,
+                                                                contentDescription = stringResource(
+                                                                    R.string.bookmark_topic_desc
+                                                                )
+                                                            )
+                                                        }
+                                                    )
+                                                },
+                                                modifier = Modifier.clickable {
+                                                    navController.navigate(
+                                                        Screen.ThreadScreen.withArgs(
+                                                            topic.getTopicId()
+                                                        )
+                                                    )
                                                 }
                                             )
 
@@ -158,7 +190,19 @@ fun ForumScreen(
                     Box(
                         modifier = Modifier.fillMaxSize(),
                         contentAlignment = Alignment.Center,
-                        content = { Text(text = "Unable to get posts") }
+                        content = {
+                            Column(
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                content = {
+                                    Text(text = "Unable to get posts")
+                                    Spacer(modifier = Modifier.height(4.dp))
+                                    Button(
+                                        onClick = { viewModel.refreshPage() },
+                                        content = { Text(text = "Retry") }
+                                    )
+                                }
+                            )
+                        }
                     )
                 }
             }
