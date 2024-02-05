@@ -30,6 +30,7 @@ fun ThreadScreen(
     viewModel: ThreadScreenViewModel = viewModel()
 ) {
     //TODO: might replace with a better method
+    //TODO: add loading animation
     LaunchedEffect(key1 = Unit, block = { viewModel.getThread(threadId) })
 
     Scaffold(

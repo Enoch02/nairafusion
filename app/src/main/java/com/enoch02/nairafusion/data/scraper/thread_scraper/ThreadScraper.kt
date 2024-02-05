@@ -19,17 +19,16 @@ class ThreadScraper {
     suspend fun getThread(threadID: String): MutableList<ThreadItem> {
         return withContext(Dispatchers.IO) {
             val threadItems = mutableListOf<ThreadItem>()
-            val threadDoc = connection.url("$baseUrl/$threadID").get()
-            val postsTable = threadDoc.select("[summary=posts]")
-            val posts = postsTable.select("tr")
-
-            println(posts.size)
 
             try {
+                val threadDoc = connection.url("$baseUrl/$threadID").get()
+                val postsTable = threadDoc.select("[summary=posts]")
+                val posts = postsTable.select("tr")
+
                 for (index in 0 until posts.size step 2) {
                     val threadItemHeader = posts[index]
                     val threadItemBody = posts[index + 1]
-                    val threadBodyElements = threadItemBody.select("div.narrow *")
+                    val threadBodyElements = threadItemBody.select("div.narrow")
 
                     val item = ThreadItem(
                         title = getTitle(threadItemHeader),
@@ -44,6 +43,8 @@ class ThreadScraper {
                 }
             } catch (e: IndexOutOfBoundsException) {
                 Log.d(TAG, "${e.message}\nThis is fine, i.e., an expected behavior.")
+            } catch (e: Exception) {
+                Log.e(TAG, "${e.message}")
             }
 
             return@withContext threadItems

@@ -42,11 +42,6 @@ fun ThreadItem(
     Card(
         modifier = Modifier.fillMaxWidth(),
         content = {
-            /*Text(
-                text = "$title by $user at $dateCreated",
-                modifier = Modifier.padding(4.dp),
-                textAlign = TextAlign.Justify
-            )*/
             Text(
                 text = buildAnnotatedString {
                     //TODO: replace with proper color
@@ -71,7 +66,7 @@ fun ThreadItem(
                 modifier = Modifier.padding(4.dp),
                 textAlign = TextAlign.Justify
             )
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(4.dp))
             Divider()
 
             Text(
